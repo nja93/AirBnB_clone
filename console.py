@@ -35,10 +35,10 @@ class HBNBCommand(cmd.Cmd):
 
         if line == "" or line is None:
             print("** class name missing **")
-        elif line not in storage.classes():
+        elif line not in storage.class_list():
             print("** class doesn't exist **")
         else:
-            bnb = storage.classes()[line]()
+            bnb = storage.class_list()[line]()
             bnb.save()
             print(bnb.id)
 
@@ -49,7 +49,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         else:
             text = line.split(' ')
-            if text[0] not in storage.classes():
+            if text[0] not in storage.class_list():
                 print("** class doesn't exist **")
             elif len(text) < 2:
                 print("** instance id missing **")
@@ -67,7 +67,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         else:
             text = line.split(' ')
-            if text[0] not in storage.classes():
+            if text[0] not in storage.class_list():
                 print("** class doesn't exist **")
             elif len(text) < 2:
                 print("** instance id missing **")
@@ -84,7 +84,7 @@ class HBNBCommand(cmd.Cmd):
 
         if line != "":
             text = line.split(' ')
-            if text[0] not in storage.classes():
+            if text[0] not in storage.class_list():
                 print("** class doesn't exist **")
             else:
                 inst_list = [str(obj) for key, obj in storage.all().items()
@@ -109,7 +109,7 @@ class HBNBCommand(cmd.Cmd):
         value = match.group(4)
         if not match:
             print("** class name missing **")
-        elif classname not in storage.classes():
+        elif classname not in storage.class_list():
             print("** class doesn't exist **")
         elif uid is None:
             print("** instance id missing **")
@@ -147,7 +147,7 @@ class HBNBCommand(cmd.Cmd):
         text = line.split(' ')
         if not text[0]:
             print("** class name missing **")
-        elif text[0] not in storage.classes():
+        elif text[0] not in storage.class_list():
             print("** class doesn't exist **")
         else:
             count = [
