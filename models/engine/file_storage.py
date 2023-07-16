@@ -2,7 +2,9 @@
 """File Storage Class"""
 
 
+import datetime
 import json
+import os
 from models.base_model import BaseModel
 from models.state import State
 from models.city import City
@@ -24,32 +26,24 @@ class FileStorage:
     def all(self):
         """
         Returns the dictionary of all objects.
-
-        Returns:
-            dict: A dictionary containing all objects.
         """
         return self.__objects
 
     def new(self, obj):
         """
-        Adds a new object to the dictionary of objects.
-
-        Args:
-            obj: The object to be added.
+        In the __objects dict the obj with key <obj class name>.id
         """
         key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        self.__objects[key] = obj
+        FileStorage.__objects[key] = obj
 
     def save(self):
         """
         Serializes the objects dictionary to a JSON file.
-        The JSON file path is specified by __file_path.
+
         """
-        obj_dict = {}
-        for key, obj in self.__objects.items():
-            obj_dict[key] = obj.to_dict()
-        with open(self.__file_path, "w") as file:
-            json.dump(obj_dict, file)
+        with open(FileStorage.__file_path, "w", encoding="utf-8") as file:
+            data = {key: value.to_dict() for key, value in FileStorage.__objects.items()}
+            json.dump(data, file)
 
     def reload(self):
         """
@@ -58,21 +52,25 @@ class FileStorage:
         and load objects.
         If file doesn't exist, do nothing.
         """
-        class_list = {
-            'BaseModel': BaseModel,
-            'State': State,
-            'City': City,
-            'Amenity': Amenity,
-            'Place': Place,
-            'Review': Review,
-            'User': User
-        }
+        if not os.path.isfile(FileStorage.__file_path):
+            return
+        with open(FileStorage.__file_path, "r", encoding="utf-8") as file:
+            my_dict = json.load(file)
+            my_dict = {key: self.classes()[val["__class__"]](**val)
+                        for key, val in my_dict.items()}
 
-        try:
-            with open(self.__file_path, "r") as file:
-                obj_dict = json.load(file)
-                for key, value in obj_dict.items():
-                    class_name, obj_id = key.split(".")
-                    self.__objects[key] = globals()[class_name](**value)
-        except FileNotFoundError:
-            pass
+            FileStorage.__objects = my_dict
+
+    def classes(self):
+        """Return key value pairs of classes and values """
+
+        class_dict = {"BaseModel": BaseModel,
+                   "User": User,
+                   "State": State,
+                   "City": City,
+                   "Amenity": Amenity,
+                   "Place": Place,
+                    "Review": Review}
+
+        return class_dict
+
