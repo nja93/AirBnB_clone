@@ -2,10 +2,10 @@
 """This Module is responsible for the CLI."""
 
 import cmd
-import re
-import json
 from models.base_model import BaseModel
 from models import storage
+import re
+import json
 
 
 class HBNBCommand(cmd.Cmd):

@@ -16,8 +16,8 @@ from models.review import Review
 
 class FileStorage:
     """
-    This class provides a file storage module for serializing instances
-    to a JSON file and deserializing JSON files to instances.
+    This module is responsible for serialization and deserialization of
+    class instances.
     """
 
     __file_path = "file.json"
@@ -27,22 +27,22 @@ class FileStorage:
         """
         Returns the dictionary of all objects.
         """
-        return FileStorage.__objects
+        return self.__objects
 
     def new(self, obj):
         """
         In the __objects dict the obj with key <obj class name>.id
         """
         key = "{}.{}".format(type(obj).__class__.__name__, obj.id)
-        FileStorage.__objects[key] = obj
+        self.__objects[key] = obj
 
     def save(self):
         """
         Serializes the objects dictionary to a JSON file.
 
         """
-        with open(FileStorage.__file_path, "w", encoding="utf-8") as file:
-            data = {key: value.to_dict() for key, value in FileStorage.__objects.items()}
+        with open(self.__file_path, "w", encoding="utf-8") as file:
+            data = {key: value.to_dict() for key, value in self.__objects.items()}
             json.dump(data, file)
 
     def classes(self):
@@ -65,14 +65,14 @@ class FileStorage:
         and load objects.
         If file doesn't exist, do nothing.
         """
-        if not os.path.isfile(FileStorage.__file_path):
+        if not os.path.isfile(self.__file_path):
             return
-        with open(FileStorage.__file_path, "r", encoding="utf-8") as file:
+        with open(self.__file_path, "r", encoding="utf-8") as file:
             my_dict = json.load(file)
             my_dict = {key: self.classes()[val["__class__"]](**val)
                         for key, val in my_dict.items()}
 
-            FileStorage.__objects = my_dict
+            self.__objects = my_dict
 
 
 
