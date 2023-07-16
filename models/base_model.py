@@ -41,13 +41,13 @@ class BaseModel:
             format(type(self).__name__, self.id, self.__dict__)
 
     def save(self):
-        """updates the public instance attribute updated_at"""
+        """Public instance attribute updated_at is updated"""
 
         self.updated_at = datetime.now()
         storage.save()
 
     def to_dict(self):
-        """Return a dictionary containing all keys/values of __dict__"""
+        """Returns a dictionary of keys value pairs from __dict__"""
 
         myClass_dict = self.__dict__.copy()
         myClass_dict["__class__"] = type(self).__name__
