@@ -14,15 +14,39 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb) "
 
-    def do_quit(self, line):
-        """Type Quit to exit the program"""
+    def update_dict(self, classname, uid, s_dict):
+        """update() Method for update with a dictionary."""
 
-        return True
+        s = s_dict.replace("'", '"')
+        d = json.loads(s)
+        if not classname:
+            print("** class name missing **")
+        elif classname not in storage.classes():
+            print("** class doesn't exist **")
+        elif uid is None:
+            print("** instance id missing **")
+        else:
+            key = "{}.{}".format(classname, uid)
+            if key not in storage.all():
+                print("** no instance found **")
+            else:
+                attributes = storage.attributes()[classname]
+                for attribute, value in d.items():
+                    if attribute in attributes:
+                        value = attributes[attribute](value)
+                    setattr(storage.all()[key], attribute, value)
+                storage.all()[key].save()
+
 
     def do_EOF(self, line):
         """Type Ctrl + D : Handles End Of File."""
 
         print()
+        return True
+
+    def do_quit(self, line):
+        """Type Quit to exit the program"""
+
         return True
 
     def emptyline(self):
