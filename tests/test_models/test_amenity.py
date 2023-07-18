@@ -1,20 +1,20 @@
 #!/usr/bin/python3
-"""Unit tests for review class"""
+"""Unit tests for Amenity class"""
 
 import unittest
 import models
-from models.review import Review
+from models.amenity import Amenity
 from datetime import datetime
 from time import sleep
 import os
 
 
-class Test_Review(unittest.TestCase):
-    """Test casess for Review class"""
+class Test_Amenity(unittest.TestCase):
+    """Test casess for Amenity class"""
 
     def setUp(self):
         """Set up the env before each test case"""
-        self.review = Review()
+        self.amenity = Amenity()
 
     def tearDown(self):
         """Clean up the test env after each test case if needed"""
@@ -28,165 +28,165 @@ class Test_Review(unittest.TestCase):
             'updated_at': '2023-01-01T00:00:00',
             'name': 'Test'
         }
-        self.review = Review(**data)
+        self.amenity = Amenity(**data)
 
         # Verify that the attributes are set correctly
-        self.assertEqual(self.review.id, '123')
-        self.assertEqual(self.review.created_at,
+        self.assertEqual(self.amenity.id, '123')
+        self.assertEqual(self.amenity.created_at,
                          datetime.fromisoformat('2023-01-01T00:00:00'))
-        self.assertEqual(self.review.updated_at,
+        self.assertEqual(self.amenity.updated_at,
                          datetime.fromisoformat('2023-01-01T00:00:00'))
-        self.assertEqual(self.review.name, 'Test')
+        self.assertEqual(self.amenity.name, 'Test')
 
     def test_init_without_arguments(self):
         """Test initialization without arguments"""
-        self.review = Review()
+        self.amenity = Amenity()
 
         # Verify that the attributes are set correctly
-        self.assertIsNotNone(self.review.id)
-        self.assertIsNotNone(self.review.created_at)
-        self.assertIsNotNone(self.review.updated_at)
-        self.assertEqual(self.review.created_at, self.review.updated_at)
+        self.assertIsNotNone(self.amenity.id)
+        self.assertIsNotNone(self.amenity.created_at)
+        self.assertIsNotNone(self.amenity.updated_at)
+        self.assertEqual(self.amenity.created_at, self.amenity.updated_at)
 
     def test_args(self):
         """Testing args which was unused"""
-        rv = Review(None)
-        self.assertNotIn(None, rv.__dict__.values())
+        am = Amenity(None)
+        self.assertNotIn(None, am.__dict__.values())
 
     def test_with_kwargs(self):
         """Testing with kwargs"""
         date = datetime.now()
         tform = date.isoformat()
-        rv = Review(id="123", created_at=tform, updated_at=tform)
-        self.assertEqual(rv.id, "123")
-        self.assertEqual(rv.created_at, date)
-        self.assertEqual(rv.updated_at, date)
+        am = Amenity(id="123", created_at=tform, updated_at=tform)
+        self.assertEqual(am.id, "123")
+        self.assertEqual(am.created_at, date)
+        self.assertEqual(am.updated_at, date)
 
     def test_kwargs_None(self):
         """Testing with kwargs at None"""
         with self.assertRaises(TypeError):
-            Review(id=None, created_at=None, updated_at=None)
+            Amenity(id=None, created_at=None, updated_at=None)
 
     def test_with_args_and_kwargs(self):
         """ testing with both args and kwargs"""
         date = datetime.now()
         tform = date.isoformat()
-        rv = Review(id="123", created_at=tform, updated_at=tform)
-        self.assertEqual(rv.id, "123")
-        self.assertEqual(rv.created_at, date)
-        self.assertEqual(rv.updated_at, date)
+        am = Amenity(id="123", created_at=tform, updated_at=tform)
+        self.assertEqual(am.id, "123")
+        self.assertEqual(am.created_at, date)
+        self.assertEqual(am.updated_at, date)
 
     def test_id_is_str(self):
-        """checks if id data type"""
-        self.assertEqual(str, type(Review().id))
+        """checks the id data type"""
+        self.assertEqual(str, type(Amenity().id))
 
     def test_id_is_unique(self):
         """test if ids generated are unique"""
-        user1 = Review()
-        user2 = Review()
+        user1 = Amenity()
+        user2 = Amenity()
         self.assertNotEqual(user1.id, user2.id)
 
     def test_created_at_datetime(self):
         """Checks if the attribute is a datetime object"""
-        self.assertEqual(datetime, type(Review().created_at))
+        self.assertEqual(datetime, type(Amenity().created_at))
 
     def test_created_at_timestamp(self):
         """checks if the timestamp is different"""
-        user1 = Review()
+        user1 = Amenity()
         sleep(0.05)
-        user2 = Review()
+        user2 = Amenity()
         self.assertLess(user1.created_at, user2.created_at)
 
     def test_updated_at_datetime(self):
         """Checks if attribute is a datetime object"""
-        self.assertEqual(datetime, type(Review(). updated_at))
+        self.assertEqual(datetime, type(Amenity(). updated_at))
 
     def test_updated_at_timestamp(self):
         """Checks if the timestamp is different"""
-        user1 = Review()
+        user1 = Amenity()
         sleep(0.05)
-        user2 = Review()
+        user2 = Amenity()
         self.assertLess(user1.updated_at, user2.updated_at)
 
     def test_instance_storage(self):
         """checks if storage and retrival were successful"""
-        self.assertIn(Review(), models.storage.all().values())
+        self.assertIn(Amenity(), models.storage.all().values())
 
     def test__str__(self):
         """tests the string representation"""
-        rv1 = Review()
-        rv2 = Review()
-        self.assertNotEqual(rv1.__str__(), rv2.__str__())
+        am1 = Amenity()
+        am2 = Amenity()
+        self.assertNotEqual(am1.__str__(), am2.__str__())
 
     def test_save(self):
         """tests the effectivity of timestamp updates"""
-        rv = Review()
+        am = Amenity()
         sleep(0.1)
-        update = rv.updated_at
-        rv.save()
-        self.assertLess(update, rv.updated_at)
+        update = am.updated_at
+        am.save()
+        self.assertLess(update, am.updated_at)
 
     def test_two_saves(self):
         """tests the effectivity of different timestamps updates"""
-        rv = Review()
+        am = Amenity()
         sleep(0.1)
-        upadte1 = rv.updated_at
-        rv.save()
-        update2 = rv.updated_at
+        upadte1 = am.updated_at
+        am.save()
+        update2 = am.updated_at
         self.assertLess(upadte1, update2)
         sleep(0.1)
-        rv.save()
-        self.assertLess(update2, rv.updated_at)
+        am.save()
+        self.assertLess(update2, am.updated_at)
 
     def test_save_updates_file(self):
         """tests that updates are updated and stored correctly"""
-        rv = Review()
-        rv.save()
-        rvid = "Review." + rv.id
+        am = Amenity()
+        am.save()
+        amid = "Amenity." + am.id
         with open("file.json", "r") as file:
-            self.assertIn(rvid, file.read())
+            self.assertIn(amid, file.read())
 
     def test_to_dict(self):
         """Tests the expected output"""
         expected_dict = {
-            'id': self.review.id,
-            'created_at': self.review.created_at.isoformat(),
-            'updated_at': self.review.updated_at.isoformat(),
-            '__class__': 'Review'
+            'id': self.amenity.id,
+            'created_at': self.amenity.created_at.isoformat(),
+            'updated_at': self.amenity.updated_at.isoformat(),
+            '__class__': 'Amenity'
         }
-        self.assertEqual(self.review.to_dict(), expected_dict)
+        self.assertEqual(self.amenity.to_dict(), expected_dict)
 
     def test_to_dict_type(self):
         """verifys the class returns a dictionary"""
-        rv = Review()
-        self.assertTrue(dict, type(rv.to_dict()))
+        am = Amenity()
+        self.assertTrue(dict, type(am.to_dict()))
 
     def test_different_to_dict(self):
         """tests that the class produces 2 diff dict for diff instances"""
-        rv1 = Review()
+        am1 = Amenity()
         sleep(0.05)
-        rv2 = Review()
-        self.assertNotEqual(rv1.to_dict(), rv2.to_dict())
+        am2 = Amenity()
+        self.assertNotEqual(am1.to_dict(), am2.to_dict())
 
     def test_to_dict_has_correct_keys(self):
         """tests that the dict contains the right keys"""
-        rv = Review()
-        self.assertIn("id", rv.to_dict())
-        self.assertIn("__class__", rv.to_dict())
-        self.assertIn("created_at", rv.to_dict())
-        self.assertIn("updated_at", rv.to_dict())
+        am = Amenity()
+        self.assertIn("id", am.to_dict())
+        self.assertIn("__class__", am.to_dict())
+        self.assertIn("created_at", am.to_dict())
+        self.assertIn("updated_at", am.to_dict())
 
     def test_to_dict_created_at_format(self):
         """checks the ISO formatted string"""
-        rv = self.review.to_dict()
-        created_at = rv["created_at"]
-        self.assertEqual(created_at, self.review.created_at.isoformat())
+        am = self.amenity.to_dict()
+        created_at = am["created_at"]
+        self.assertEqual(created_at, self.amenity.created_at.isoformat())
 
     def test_to_dict_updated_at_format(self):
         """checks the ISO formatted string"""
-        rv = self.review.to_dict()
-        updated_at = rv["updated_at"]
-        self.assertEqual(updated_at, self.review.updated_at.isoformat())
+        am = self.amenity.to_dict()
+        updated_at = am["updated_at"]
+        self.assertEqual(updated_at, self.amenity.updated_at.isoformat())
 
 
 if __name__ == "__main__":
