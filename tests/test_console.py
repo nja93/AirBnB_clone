@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 """
-Unittests for command interpreter
+Unit tests for command interpreter
 """
 import unittest
 from io import StringIO
@@ -382,4 +382,4 @@ class TestHBNBCommand(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-    
+

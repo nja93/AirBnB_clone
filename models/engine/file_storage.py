@@ -1,117 +1,63 @@
 #!/usr/bin/python3
-"""File Storage Class"""
 
-
-import datetime
-import json
-import os
+"""
+Create class FileStorage
+"""
 from models.base_model import BaseModel
 from models.user import User
-from models.state import State
-from models.city import City
 from models.amenity import Amenity
+from models.city import City
 from models.place import Place
 from models.review import Review
+from models.state import State
+import json
 
 
 class FileStorage:
     """
-    This module is responsible for serialization and deserialization of
-    class instances.
+    Class FileStorage
     """
-
     __file_path = "file.json"
     __objects = {}
 
     def all(self):
         """
-        Returns the dictionary of all objects.
+        returns the dictionary __objects
         """
         return self.__objects
 
     def new(self, obj):
         """
-        In the __objects dict the obj with key <obj class name>.id
+        sets in __objects the obj
         """
-        key = "{}.{}".format(type(obj).__class__.__name__, obj.id)
-        self.__objects[key] = obj
+        class_name = obj.__class__.__name__
+        self.__objects[f"{class_name}.{obj.id}"] = obj
 
     def save(self):
         """
-        Serializes the objects dictionary to a JSON file.
-
+        serializes __objects to the JSON file
         """
-        with open(self.__file_path, "w", encoding="utf-8") as file:
-            data = {key: value.to_dict() for key, value in self.__objects.items()}
-            json.dump(data, file)
+        non_ser_dict = self.__objects
+        ser_dict = {}
 
-    def classes(self):
-        """Return key value pairs of classes and values """
+        for obj_id in non_ser_dict.keys():
+            ser_dict[obj_id] = non_ser_dict[obj_id].to_dict()
 
-        class_dict = {"BaseModel": BaseModel,
-                        "User": User,
-                        "State": State,
-                        "City": City,
-                        "Amenity": Amenity,
-                        "Place": Place,
-                        "Review": Review}
-
-        return class_dict
-
-    def attributes(self):
-        """Returns a dictionary of attributes and their types based in class_name"""
-
-        attributes = {
-            "BaseModel":
-                     {"id": str,
-                      "created_at": datetime.datetime,
-                      "updated_at": datetime.datetime},
-            "User":
-                     {"email": str,
-                      "password": str,
-                      "first_name": str,
-                      "last_name": str},
-            "State":
-                     {"name": str},
-            "City":
-                     {"state_id": str,
-                      "name": str},
-            "Amenity":
-                     {"name": str},
-            "Place":
-                     {"city_id": str,
-                      "user_id": str,
-                      "name": str,
-                      "description": str,
-                      "number_rooms": int,
-                      "number_bathrooms": int,
-                      "max_guest": int,
-                      "price_by_night": int,
-                      "latitude": float,
-                      "longitude": float,
-                      "amenity_ids": list},
-            "Review":
-            {"place_id": str,
-                         "user_id": str,
-                         "text": str}
-        }
-        return attributes
+        with open(self.__file_path, "w") as json_file:
+            json.dump(ser_dict, json_file)
 
     def reload(self):
         """
-        Deserializes the JSON file and updates the objects dictionary.
-        If JSON file exists read the file
-        and load objects.
-        If file doesn't exist, do nothing.
+        deserializes the JSON file to __objects
         """
-        if not os.path.isfile(self.__file_path):
+        try:
+            with open(self.__file_path) as json_file:
+                ser_dict = json.load(json_file)
+                for values in ser_dict.values():
+                    cls_name = values["__class__"]
+                    del values["__class__"]
+                    self.new(eval(cls_name)(**values))
+
+        except FileNotFoundError:
             return
-        with open(self.__file_path, "r", encoding="utf-8") as file:
-            my_dict = json.load(file)
-            my_dict = {key: self.classes()[val["__class__"]](**val)
-                        for key, val in my_dict.items()}
-
-            self.__objects = my_dict
-
-
-
+        
