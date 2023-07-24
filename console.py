@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Console intepreter for AirBNB clone"""
+"""Console interpreter for AirBNB clone"""
 import cmd
 from models.base_model import BaseModel
 from models.amenity import Amenity
@@ -96,21 +96,6 @@ class HBNBCommand(cmd.Cmd):
             models.storage.save()
         else:
             print("** no instance found **")
-    """
-    def do_all(self, line):
-        Prints all string representation of all
-        instances based or not on the class name
-        list_objs = []
-        if line in self.classes:
-            objs = models.storage.all()
-            for inst_name_id, inst in objs.items():
-                cls_name_id = inst_name_id.split(".")
-                if line == cls_name_id[0]:
-                    list_objs.append(str(inst))
-            print(list_objs)
-        else:
-            print("** class doesn't exist **")
-    """
 
     def do_all(self, line):
         """
@@ -119,9 +104,7 @@ class HBNBCommand(cmd.Cmd):
         """
         if line in self.classes:
             objects = models.storage.all()
-            class_instances = [
-                str(instance) for instance in objects.values()
-                if type(instance).__name__ == line]
+            class_instances = [str(instance) for instance in objects.values()if type(instance).__name__ == line]
             print(class_instances)
         elif not line:
             objects = models.storage.all()
@@ -149,7 +132,7 @@ class HBNBCommand(cmd.Cmd):
         """
         args = []
         current_arg = ""
-        inside_quotes = False
+        inside_quotes = False 
 
         for char in line:
             if char == '"':
