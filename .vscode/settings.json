@@ -5,7 +5,10 @@
     "python.formatting.provider": "none",
     "cSpell.words": [
         "atts",
+        "Gihinji",
+        "Githinji",
         "HBNB",
+        "Mesfin",
         "regx"
     ],
     "python.analysis.extraPaths": [
